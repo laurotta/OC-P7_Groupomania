@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 // Importation du module de création / vérification de token
 const jwt = require('jsonwebtoken');
 
+const fs = require('fs');
+
 // Importation du modèle
 const User = require('../models/users');
 const Publications = require('../models/publications');

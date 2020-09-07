@@ -1,7 +1,7 @@
 // Importation du modèle
 const Publication = require('../models/publications');
 
-// Importation du module "file system" nécessaire pour la fonction deleteSauce
+// Importation du module "file system" nécessaire pour la fonction delete
 const fs = require('fs');
 
 exports.createPublication = (req, res, next) => {
