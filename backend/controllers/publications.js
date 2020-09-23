@@ -1,97 +1,85 @@
-// Importation du modèle
-const Publication = require('../models/publications');
-
-// Importation du module "file system" nécessaire pour la fonction delete
+const model = require('../models');
 const fs = require('fs');
 
-exports.createPublication = (req, res, next) => {
-    const publicationObject = JSON.parse(req.body.publication);
-    const publication = new Publication({
-        ...publicationObject,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-    });
-    publication.save()
-        .then(() => res.status(201).json({
-            message: 'Publication enregistrée !'
-        }))
-        .catch(error => res.status(400).json({
-            error
-        }));
-};
+exports.addPublication = (req, res, next) => {
 
-exports.modifyPublication = (req, res, next) => {
-    const publicationObject = req.file ? {
-        ...JSON.parse(req.body.publication),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    } : {
-        ...req.body
-    };
-    if (req.file) {
-        Publication.findOne({
-                id: req.params.id
-            })
-            .then(publication => {
-                const filename = publication.imageUrl.split('/images/')[1];
-                fs.unlink(`images/${filename}`, () => {
-                    Publication.updateOne({
-                            id: req.params.id
-                        }, {
-                            ...publicationObject,
-                            id: req.params.id
-                        })
-                        .then(() => res.status(200).json({
-                            message: 'Image modifiée !'
-                        }))
-                        .catch(error => res.status(400).json({
-                            error
-                        }));
-                });
-            }).catch(error => res.status(400).json({
-                error
-            }))
-    } else {
-        Publication.updateOne({
-                id: req.params.id
-            }, {
-                ...publicationObject,
-                id: req.params.id
-            })
-            .then(() => res.status(200).json({
-                message: 'Publication modifiée !'
-            }))
-            .catch(error => res.status(400).json({
-                error
-            }));
-    };
-};
-
-exports.deletePublication = (req, res, next) => {
-    Publication.findOne({
-            id: req.params.id
-        })
-        .then(publication => {
-            const filename = publication.imageUrl.split('/images/')[1];
-            fs.unlink(`images/${filename}`, () => {
-                Publication.deleteOne({
-                        id: req.params.id
-                    })
-                    .then(() => res.status(200).json({
-                        message: 'Publication supprimée !'
-                    }))
-                    .catch(error => res.status(400).json({
-                        error
-                    }));
-            })
-        })
-        .catch(error => res.status(500).json({
-            error
-        }));
+  model.Publication.create({
+      content: req.body.content,
+      UserId: req.body.userId,
+      imageUrl: (req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null)
+    })
+    .then(post => res.status(201).json({
+      post
+    }))
+    .catch(error => res.status(400).json({
+      error
+    }))
 };
 
 exports.getAllPublications = (req, res, next) => {
-    Publication.find()
-        .then(publications => res.status(200).json(publications))
-        .catch(error => res.status(400).json({
-            error
-        }));
+
+  model.Publication.findAll({
+      include: [{
+        model: model.User,
+        attributes: ['username']
+      }],
+      order: [
+        ['createdAt', 'DESC']
+      ]
+    })
+    .then(publications => res.status(200).json(publications))
+    .catch(error => res.status(400).json({
+      error
+    }));
 };
+
+exports.destroyPublication = (req, res, next) => {
+
+  model.Publication.findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then((publication) => {
+      if (publication.imageUrl) {
+        const filename = publication.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${filename}`, (error) => {
+          if (error) throw error; })
+        }
+        model.Publication.destroy({
+            where: {
+              id: req.params.id
+            }
+          })
+          .then(res.status(200).json({
+            message: "Publication supprimée !"
+          }))
+          .catch(error => res.status(500).json({
+            error,
+            message: "Suppression impossible"
+          }));
+        })
+    .catch(error => res.status(500).json({
+      error,
+      message: "Message inexistant"
+    }));
+};
+
+/*exports.modifyPublication = (req, res, next) => {
+  
+      models.Publication.update({
+              content: req.body.content,
+              imageUrl: `${req.protocol}://${req.get('host')}/images/${req.body.attachment}`
+          }, {
+              where: {
+                  id: req.params.id
+              }
+          })
+          .then(res.status(200).json({
+              message: "Publication modifiée !"
+          }))
+          .catch(res.status(500).json({
+              message: "Modification impossible."
+          }));
+          
+}*/
