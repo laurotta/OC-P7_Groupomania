@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <HomeSignupHeader />
+    <HomeSignupHeader v-bind:titre="titre"/>
 
     <b-row align-h="center">
       <b-col md="6">
@@ -171,8 +171,9 @@ export default {
         this.$http
           .post("http://localhost:3000/api/auth/signup", this.signup)
           .then(response => {
+            console.log(response.status)
             this.signupOk = ''
-            this.$bvModal.msgBoxOk('Vous êtes inscrit. Vous allez être redirigé vers la page d\'accueil pour vous connecter.', {
+            this.$bvModal.msgBoxOk('Vous êtes inscrit. Vous pouvez désormais vous connecter.', {
                 title: 'Félicitations !',
                 centered: true
             })
@@ -184,8 +185,7 @@ export default {
               .catch(error => {
                 console.log(error.message);
               })
-          })  
-        
+          })
           .catch(error => {
               this.problem = error.response.data.message;
               this.signupError = !this.signupError

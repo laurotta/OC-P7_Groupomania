@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <HomeSignupHeader />
+    <HomeSignupHeader v-bind:titre="titre"/>
 
     <b-row align-h="center">
       <b-col md="6" class="text-center">

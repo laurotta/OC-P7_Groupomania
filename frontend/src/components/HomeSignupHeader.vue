@@ -10,9 +10,9 @@
 
 <script>
 export default {
-    data() {
-        return {
-            titre: ''
+    props: {
+        titre: {
+            type: String
         }
     }
 }
