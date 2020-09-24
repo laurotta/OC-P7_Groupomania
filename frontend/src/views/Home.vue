@@ -1,15 +1,9 @@
 <template>
   <b-container>
-    <b-row align-h="center">
-      <b-col md="8" class="text-center">
-        <img  class="mt-3" src="../assets/logo.png" alt="Groupomania logo"/>
-        <h1>Bienvenue sur notre réseau social !</h1>
-        <hr/>
-      </b-col>
-    </b-row>
+    <HomeSignupHeader />
 
     <b-row align-h="center">
-      <b-col md="6">
+      <b-col md="6" class="text-center">
         <h2 class="my-3">Connectez-vous</h2>
         <b-form>
           <b-input-group class="mb-3">
@@ -80,7 +74,14 @@
 </template>
 
 <script>
+import HomeSignupHeader from "../components/HomeSignupHeader"
+
 export default {
+
+  components: {
+    HomeSignupHeader
+  },
+
   data() {
     return {
       signin: {
@@ -88,6 +89,7 @@ export default {
         password: "",
       },
       signinError: false,
+      titre: 'Bienvenue sur notre réseau social !'
     };
   },
 
@@ -118,15 +120,16 @@ h1 {
 }
 h2 {
   font-size: 1.5em;
-  text-align: center;
 }
 @media screen and (max-width: 768px) {
   h1 {
   font-size: 1.6em;
   }
+  h2 {
+  font-size: 1.2em;
+  }
   img {
     width: 100%;
   }
-  
 }
 </style>

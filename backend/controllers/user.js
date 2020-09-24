@@ -15,7 +15,7 @@ exports.signup = (req, res, next) => {
     return res.status(400).json({
       message: 'Veuillez renseigner tous les champs.'
     });
-  } else if (username.length >= 51 || username.length <= 2) {
+  } else if (username.length >= 50 || username.length <= 2) {
     return res.status(400).json({
       message: 'Votre nom d\'utilisateur doit être composé de 3 à 50 caractères'
     });
@@ -34,35 +34,48 @@ exports.signup = (req, res, next) => {
           email: email
         }
       })
-      .then(userExist => {
-        if (!userExist) {
-          bcrypt.hash(password, 10)
-            .then(hash => {
-              model.User.create({
-                  username: username,
-                  email: email,
-                  password: hash
+      .then(emailNotFound => {
+        if (!emailNotFound) {
+          model.User.findOne({
+            attributes: ['username'],
+            where: {
+              username: username
+            }
+          })
+          .then(usernameNotFound => {
+            if (!usernameNotFound) {
+              bcrypt.hash(password, 10)
+                .then(hash => {
+                  model.User.create({
+                      username: username,
+                      email: email,
+                      password: hash
+                    })
+                    .then(newUser => {
+                      res.status(201).json({
+                        id: newUser.id,
+                      })
+                    })
+                    .catch(error => res.status(400).json({
+                      error
+                    }));
                 })
-                .then(newUser => {
-                  res.status(201).json({
-                    id: newUser.id,
-                  })
-                })
-                .catch(error => res.status(400).json({
+                .catch(error => res.status(500).json({
                   error
-                }));
-            })
-            .catch(error => res.status(500).json({
-              error
-            }))
+                }))
+            } else {
+              return res.status(403).json({
+                message: 'Ce nom d\'utilisateur est déjà pris !'
+              });
+            }
+          })
         } else {
           return res.status(403).json({
-            message: 'L\'utilisateur existe déjà !'
+            message: 'Cette adresse email est déjà utlisée !'
           });
         }
       })
       .catch(error => res.status(500).json({
-        message: 'Impossible de créer l\'utilisateur.',
         error
       }));
   }
