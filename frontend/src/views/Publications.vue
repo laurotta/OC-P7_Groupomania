@@ -1,6 +1,7 @@
 <template>
-  <div id="mainpage" class="centerthis mt-3">
+  <b-container>
     <Header />
+    <b-row align-h="center">
     <b-col
       sm="8"
       v-for="publication in publications"
@@ -16,7 +17,7 @@
           <p class="mb-0"><strong>{{ publication.User.username }}</strong></p>
         </template>
 
-        <b-card-text>{{ publication.content }}</b-card-text>
+        <b-card-text class="br">{{ publication.content }}</b-card-text>
         <b-row>
           <b-col class="text-center">
             <b-img v-if="publication.imageUrl !== null" :src="publication.imageUrl" fluid alt=""></b-img>
@@ -48,7 +49,8 @@
         </template>
       </b-card>
     </b-col>
-  </div>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -140,28 +142,15 @@ export default {
 </script>
 
 <style>
-.centerthis {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 .content {
   box-shadow: 0px 0px 10px 4px grey;
-}
-h1 {
-  font-size: 2em;
-  text-align: center;
-}
-h2 {
-  font-size: 1.5em;
-  text-align: center;
-  margin-top: 2em;
-  margin-bottom: 1em;
 }
 .datetime {
   font-size: 0.85em;
   color:slategrey;
   padding-left: 0.7em;
+}
+.br {
+  white-space: pre-wrap;
 }
 </style>

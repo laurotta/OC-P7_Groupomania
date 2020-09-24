@@ -1,7 +1,7 @@
 <template>
-  <b-container class="fluid my-4">
-    <b-row>
-      <b-col sm="8" class="centerthis">
+  <b-container class="my-4">
+    <b-row align-h="center">
+      <b-col sm="8" class="text-center">
         <img class="px-3 imgsize" alt="Groupomania logo" src="../assets/icon-left-font-monochrome-black.svg"/>
         <h1 class="my-3">Réseau social interne</h1>
       </b-col>
