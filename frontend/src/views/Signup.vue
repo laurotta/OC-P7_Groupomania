@@ -2,88 +2,108 @@
   <b-container>
     <HomeSignupHeader v-bind:titre="titre"/>
 
+    <!-- Formulaire d'inscription -->
     <b-row align-h="center">
       <b-col md="6">
         <h2 class="my-3">Complétez le formulaire ci-dessous</h2>
         <b-card>
           <b-form>
+
+            <!-- Champ nom d'utilisateur -->
             <b-form-group
               label="Entrez un nom d'utilisateur :"
               label-for="input-username"
               :invalid-feedback="invalidUsernameFeedback"
               :valid-feedback="validUsernameFeedback"
-              :state="stateUsername">
+              :state="stateUsername"
+            >
               <b-form-input
                 id="input-username"
                 v-model="signup.username"
                 required
                 aria-describedby="username-help-block"
-                trim>
-              </b-form-input>
+                trim
+              ></b-form-input>
               <b-form-text id="username-help-block">
                 Votre nom d'utilisateur doit être composé de 3 à 50 caractères.
               </b-form-text>
             </b-form-group>
 
+            <!-- Champ email -->
             <b-form-group
               label="Entrez un email :"
               label-for="input-email"
               :invalid-feedback="invalidEmailFeedback"
               :valid-feedback="validEmailFeedback"
-              :state="stateEmail">
+              :state="stateEmail"
+            >
               <b-form-input
                 id="input-email"
                 v-model="signup.email"
                 type="email"
                 required
-                trim>
-              </b-form-input>
+                trim
+              ></b-form-input>
             </b-form-group>
 
+            <!-- Champ mot de passe -->
             <b-form-group
               label="Entrez un mot de passe :"
               label-for="input-password"
               :invalid-feedback="invalidPasswordFeedback"
               :valid-feedback="validPasswordFeedback"
-              :state="statePassword">
+              :state="statePassword"
+            >
               <b-form-input
                 id="input-password"
                 v-model="signup.password"
                 type="password"
                 required
                 aria-describedby="password-help-block"
-                trim>
-              </b-form-input>
+                trim
+              ></b-form-input>
               <b-form-text id="password-help-block">
                 Votre mot de passe doit être composé de 8 à 12 caratère.<br>
                 Il doit comporter au moins une lettre et un chiffre.
               </b-form-text>
             </b-form-group>
 
+            <!-- Bouton de validation -->
             <b-col class="text-center">
               <b-button
                 class="my-3"
                 type="submit"
                 variant="success"
-                @click="signUp">Envoyer</b-button>
+                @click="signUp"
+              >
+                Envoyer
+              </b-button>
             </b-col>
           </b-form>
         </b-card>
       </b-col>
     </b-row>
 
+    <!-- Indication des erreurs -->
     <b-modal
       id="bv-modal-error"
       v-model="signupError"
       hide-footer
-      centered>
+      centered
+    >
       <template v-slot:modal-title>
         Erreur
       </template>
       <div class="d-block text-center">
         <p>{{ problem }}</p>
       </div>
-      <b-button class="mt-3" variant="info" block @click="$bvModal.hide('bv-modal-error')">Ok</b-button>
+      <b-button 
+        class="mt-3"
+        variant="info"
+        block @click="$bvModal.hide('bv-modal-error')"
+      >
+        Ok
+      </b-button>
     </b-modal>
   </b-container>
 </template>
@@ -184,12 +204,12 @@ export default {
                 }})
               .catch(error => {
                 console.log(error.message);
-              })
+              });
           })
           .catch(error => {
-              this.problem = error.response.data.message;
+              this.problem = error.data.message;
               this.signupError = !this.signupError
-          })
+          });
       } else {
         this.problem = 'Veuillez compléter tous les champs.'
         this.signupError = !this.signupError

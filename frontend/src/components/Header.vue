@@ -1,28 +1,39 @@
 <template>
+  <!-- Entête page principale -->
   <b-container class="my-4">
     <b-row align-h="center">
+
+      <!-- Partie logo et nom -->
       <b-col sm="8" class="text-center">
         <img class="px-3 imgsize" alt="Groupomania logo" src="../assets/icon-left-font-monochrome-black.svg"/>
         <h1 class="my-3">Réseau social interne</h1>
       </b-col>
+
+      <!-- Partie utilisateur -->
       <b-col>
         <div class="user-box">
-          <p id="welcome" class="m-3"><b-icon icon="person-circle"></b-icon> {{ username }}</p>
+          <p id="welcome" class="m-3"><b-icon icon="person-circle"></b-icon> {{ user.username }}</p>
           <div class="m-3">
             <b-button
               type="button"
               size="sm"
               variant="secondary"
-              @click="disconnect">
-              <b-icon icon="door-open" aria-hidden="true"></b-icon> Déconnexion</b-button>
+              @click="disconnect"
+            >
+              <b-icon icon="door-open" aria-hidden="true"></b-icon>
+                Déconnexion
+            </b-button>
           </div>
           <div class="m-3">
             <b-button
               type="button"
               size="sm"
               variant="warning"
-              @click="unsubscribe">
-              <b-icon icon="exclamation-circle" aria-hidden="true"></b-icon> Désinscription</b-button>
+              @click="unsubscribe"
+            >
+              <b-icon icon="exclamation-circle" aria-hidden="true"></b-icon>
+                Désinscription
+            </b-button>
           </div>
         </div>
       </b-col>
@@ -33,6 +44,7 @@
 
 <script>
 import AddPublication from "../components/AddPublication"
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -41,13 +53,24 @@ export default {
 
   data () {
     return {
-      username: localStorage.getItem("user"),
-      id: localStorage.getItem("userId"),
-      unsubscribeUser: ''
+      unsubscribeUser: '',
     };
   },
 
+  created() {
+      if (localStorage.getItem('token') === null) {
+        this.$router.push({ path: '/' })
+      } else {
+        this.$store.dispatch("getUserData");
+      }
+  },
+
+  computed: {
+    ...mapState(['user'])
+  },
+
   methods: {
+
     disconnect() {
       localStorage.clear();
       this.$router.push({ path: '/' })
@@ -66,27 +89,26 @@ export default {
           hideHeaderClose: false,
           centered: true
         })
-          .then(value => {
-            this.unsubscribeUser = value
-            if (this.unsubscribeUser == true) {
-              this.$http
-                .delete("http://localhost:3000/api/auth/" + this.id, {
-                  headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token")
-                  }
-                })
-                .then(() => {
-                  this.disconnect()
-                })
-                .catch(error => {
-                  console.log(error.message);
-                });
-            }
-          })
-          .catch(error => {
-            console.log(error.message)
-          })
-
+        .then(value => {
+          this.unsubscribeUser = value
+          if (this.unsubscribeUser == true) {
+            this.$http
+              .delete("http://localhost:3000/api/auth/delete", {
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("token")
+                }
+              })
+              .then(() => {
+                this.disconnect()
+              })
+              .catch(error => {
+                console.log(error.message);
+              });
+          }
+        })
+        .catch(error => {
+          console.log(error.message)
+        });
     }
   }
 };

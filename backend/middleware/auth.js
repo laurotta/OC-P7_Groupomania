@@ -9,6 +9,7 @@ module.exports = (req, res, next) => {
     if (req.body.userId && req.body.userId !== userId) {
       throw 'Nom d\'utilisateur inconnu !';
     } else {
+      res.locals.userId = userId;
       next();
     }
   } catch (error) {

@@ -95,13 +95,13 @@ exports.signin = (req, res, next) => {
         email: email
       }
     })
-    .then(userExist => {
-      if (!userExist) {
+    .then(user => {
+      if (!user) {
         return res.status(401).json({
           error: 'Utilisateur non trouvé !'
         })
       }
-      bcrypt.compare(password, userExist.password)
+      bcrypt.compare(password, user.password)
         .then(valid => {
           if (!valid) {
             return res.status(401).json({
@@ -109,11 +109,11 @@ exports.signin = (req, res, next) => {
             })
           }
           res.status(200).json({
-            userId: userExist.id,
-            username: userExist.username,
-            moderator: userExist.moderator,
+            userId: user.id,
+            username: user.username,
+            moderator: user.moderator,
             token: jwt.sign({
-                userId: userExist.id
+                userId: user.id
               },
               'mon_TOKEN_est_SECRET', {
                 expiresIn: '24h'
@@ -127,55 +127,62 @@ exports.signin = (req, res, next) => {
     })
     .catch(error => res.status(500).json({
       error
-    }))
+    }));
+};
+
+exports.userData = (req, res, next) => {
+  model.User.findOne({
+      where: {
+        id: res.locals.userId
+      }
+    })
+    .then(user => {
+      return res.status(200).json({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          moderator: user.moderator
+      });
+    })
+    .catch(error => res.status(500).json({
+      error
+    }));
 };
 
 exports.unsubscribeUser = (req, res, next) => {
-
-  model.User.findOne({
+  model.Publication.findAll({
       where: {
-        id: req.params.id
+        UserId: res.locals.userId
       }
     })
-    .then(() => {
-      model.Publication.findAll({
-          where: {
-              UserId: req.params.id
-            }
-          })
-          .then(found => {
-            for (let i in found) {
-              const allPublications = found[i];
-              const filename = allPublications.imageUrl.split('/images/')[1];
-              fs.unlink(`images/${filename}`, () => {
-                model.Publication.destroy({
-                    where: {
-                      id: allPublications.id
-                    }
-                  })
-
-              });
-            };
-          })
-          .catch(error => res.status(500).json({
-            error,
-            message: 'Aucune publication trouvée'
-          }));
-          model.User.destroy({
+    .then(found => {
+      for (let i in found) {
+        const allPublications = found[i];
+        const filename = allPublications.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => {
+          model.Publication.destroy({
               where: {
-                id: req.params.id
+                id: allPublications.id
               }
             })
-          .then(() => res.status(200).json({
-            message: 'Utilisateur supprimé !'
-          }))
-          .catch(error => res.status(500).json({
-            error
-          }));
-
+            .then(() => {
+              model.User.destroy({
+                where: {
+                  id: res.locals.userId
+                }
+              })
+              .then(() => res.status(200).json({
+                message: 'Utilisateur supprimé !'
+              }))
+              .catch(error => res.status(500).json({
+                error
+              }));
+            })
+        });
+      };
     })
     .catch(error => res.status(500).json({
       error,
-      message: 'Suppression du compte impossible.'
+      message: 'Aucune publication trouvée'
     }));
 };
