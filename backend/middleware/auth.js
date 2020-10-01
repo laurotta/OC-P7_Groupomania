@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
     }
   } catch (error) {
     res.status(401).json({
-      error: 'Requête non authentifiée !'
+      message: 'Connectez-vous pour accéder à cette page.'
     });
   }
 };

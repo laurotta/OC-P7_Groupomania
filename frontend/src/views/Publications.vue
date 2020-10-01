@@ -20,14 +20,17 @@
           <template v-slot:header>
             <p class="mb-0"><strong>{{ publication.User.username }}</strong></p>
           </template>
+
           <!-- Texte -->
           <b-card-text class="br">{{ publication.content }}</b-card-text>
+
           <!-- Image (facultative) -->
           <b-row>
             <b-col class="text-center">
               <b-img v-if="publication.imageUrl !== null" :src="publication.imageUrl" fluid alt=""></b-img>
             </b-col>
           </b-row>
+
           <!-- Bouton supprimer -->
           <b-row align-h="end">
             <b-col offset="11" v-if="user.moderator == 1 || user.id == publication.UserId">
@@ -42,6 +45,7 @@
               </b-button>
             </b-col>
           </b-row>
+          
           <!-- Pied carte -->
           <template v-slot:footer>
             <b-icon icon="calendar2-check"></b-icon>
@@ -90,8 +94,7 @@ export default {
         this.publications = response.data;
       })
       .catch(error => {
-        console.log(error.message);
-        this.$router.push({ path: '/' });
+        console.log(error.response.data.message);
       });
   },
 

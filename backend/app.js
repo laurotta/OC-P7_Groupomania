@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const helmet = require("helmet");
+const helmet = require('helmet');
 
 const publicationsRoutes = require('./routes/publications');
 const userRoutes = require('./routes/user');

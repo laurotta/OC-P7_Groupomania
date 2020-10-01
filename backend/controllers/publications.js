@@ -69,12 +69,10 @@ exports.destroyPublication = (req, res, next) => {
           message: 'Publication supprimée !'
         }))
         .catch(error => res.status(400).json({
-          error,
-          message: 'Suppression impossible'
+          error
         }));
       })
     .catch(error => res.status(500).json({
-      error,
-      message: 'Message inexistant'
+      error
     }));
 };
