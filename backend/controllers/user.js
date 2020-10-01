@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const model = require('../models');
+const { Op } = require("sequelize");
 
 exports.signup = (req, res, next) => {
   let emailRegEx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -29,50 +30,43 @@ exports.signup = (req, res, next) => {
     });
   } else {
     model.User.findOne({
-        attributes: ['email'],
+        attributes: ['username','email'],
         where: {
-          email: email
+          [Op.or]: [
+            { username: username },
+            { email: email }
+          ]
         }
       })
-      .then(emailNotFound => {
-        if (!emailNotFound) {
-          model.User.findOne({
-            attributes: ['username'],
-            where: {
-              username: username
-            }
-          })
-          .then(usernameNotFound => {
-            if (!usernameNotFound) {
-              bcrypt.hash(password, 10)
-                .then(hash => {
-                  model.User.create({
-                      username: username,
-                      email: email,
-                      password: hash
-                    })
-                    .then(newUser => {
-                      res.status(201).json({
-                        id: newUser.id,
-                      })
-                    })
-                    .catch(error => res.status(400).json({
-                      error
-                    }));
+      .then(userFound => {
+        if (!userFound) {
+          bcrypt.hash(password, 10)
+            .then(hash => {
+              model.User.create({
+                  username: username,
+                  email: email,
+                  password: hash
                 })
-                .catch(error => res.status(500).json({
+                .then(newUser => {
+                  res.status(201).json({
+                    id: newUser.id,
+                  })
+                })
+                .catch(error => res.status(400).json({
                   error
-                }))
-            } else {
-              return res.status(403).json({
-                message: 'Ce nom d\'utilisateur est déjà pris !'
-              });
-            }
-          })
-        } else {
+                }));
+            })
+            .catch(error => res.status(500).json({
+              error
+            }))
+        } else if (userFound.username == username) {
+          return res.status(403).json({
+            message: 'Ce nom d\'utilisateur est déjà pris !'
+          });
+        } else if (userFound.email == email) {
           return res.status(403).json({
             message: 'Cette adresse email est déjà utlisée !'
-          });
+          }); 
         }
       })
       .catch(error => res.status(500).json({
@@ -98,14 +92,14 @@ exports.signin = (req, res, next) => {
     .then(user => {
       if (!user) {
         return res.status(401).json({
-          error: 'Utilisateur non trouvé !'
+          message: 'Cette adresse email est inconnue, vérifiez votre saisie.'
         })
       }
       bcrypt.compare(password, user.password)
         .then(valid => {
           if (!valid) {
             return res.status(401).json({
-              error: 'Mot de passe incorrect !'
+              message: 'Mot de passe incorrect !'
             })
           }
           res.status(200).json({

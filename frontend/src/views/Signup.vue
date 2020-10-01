@@ -100,7 +100,8 @@
       <b-button 
         class="mt-3"
         variant="info"
-        block @click="$bvModal.hide('bv-modal-error')"
+        block
+        @click="$bvModal.hide('bv-modal-error')"
       >
         Ok
       </b-button>
@@ -207,7 +208,7 @@ export default {
               });
           })
           .catch(error => {
-              this.problem = error.data.message;
+              this.problem = error.response.data.message;
               this.signupError = !this.signupError
           });
       } else {

@@ -74,20 +74,21 @@
       id="bv-modal-erreur"
       v-model="signinError"
       hide-footer
-      centered>
+      centered
+    >
       <template v-slot:modal-title>
         Erreur
       </template>
       <div class="d-block text-center">
-        <p>Vérifiez votre email ou votre mot de passe !</p>
+        <p>{{ problem }}</p>
       </div>
       <b-button
         class="mt-3"
         variant="info"
         block
-        @click.prevent="$bvModal.hide('bv-modal-erreur')"
+        @click="$bvModal.hide('bv-modal-erreur')"
       >
-        Fermer
+        Ok
       </b-button>
     </b-modal>
   </b-container>
@@ -109,6 +110,7 @@ export default {
         password: "",
       },
       signinError: false,
+      problem: '',
       titre: 'Bienvenue sur notre réseau social !'
     };
   },
@@ -122,7 +124,8 @@ export default {
             localStorage.setItem("token", response.data.token);
             this.$router.push({ path: "Publications" });
           })
-          .catch(() => {
+          .catch(error => {
+            this.problem = error.response.data.message;
             this.signinError = !this.signinError;
           });
       }
