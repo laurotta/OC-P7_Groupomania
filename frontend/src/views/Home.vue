@@ -34,6 +34,17 @@
             ></b-form-input>
           </b-input-group>
 
+          <!-- Alerte avec compte à rebours sur erreur 429 -->
+          <b-alert
+            :show="dismissCountDown"
+            dismissible
+            fade
+            variant="danger"
+            @dismiss-count-down="countDownChanged"
+          >
+            Nouvelle tentative possible dans {{ dismissCountDown }} secondes...
+          </b-alert>
+
           <!-- Bouton "valider" -->
           <b-col class="text-center">
             <b-button
@@ -107,12 +118,14 @@ export default {
   data() {
     return {
       signin: {
-        email: "",
-        password: "",
+        email: null,
+        password: null,
       },
       signinError: false,
       problem: '',
-      titre: 'Bienvenue sur notre réseau social !'
+      titre: 'Bienvenue sur notre réseau social !',
+      dismissSecs: 120,
+      dismissCountDown: 0,
     };
   },
 
@@ -126,12 +139,19 @@ export default {
             this.$router.push({ path: "Publications" });
           })
           .catch(error => {
-            this.problem = error.response.data.message;
-            this.signinError = !this.signinError;
+            if (error.response.status == 429) {
+              this.dismissCountDown = this.dismissSecs;
+            } else {
+              this.problem = error.response.data.message;
+              this.signinError = !this.signinError;
+            }
           });
       }
     },
-  },
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    }
+  }
 };
 </script>
 
