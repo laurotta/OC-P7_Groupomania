@@ -151,38 +151,39 @@ exports.userData = (req, res, next) => {
 
 exports.unsubscribeUser = (req, res, next) => {
   model.Publication.findAll({
+      attributes: ['imageUrl'],
       where: {
         UserId: res.locals.userId
       }
     })
     .then(found => {
-      for (let i in found) {
-        const allPublications = found[i];
-        const filename = allPublications.imageUrl.split('/images/')[1];
-        fs.unlink(`images/${filename}`, () => {
-          model.Publication.destroy({
-              where: {
-                id: allPublications.id
-              }
-            })
-            .then(() => {
-              model.User.destroy({
-                where: {
-                  id: res.locals.userId
-                }
-              })
-              .then(() => res.status(200).json({
-                message: 'Utilisateur supprimé !'
-              }))
-              .catch(error => res.status(500).json({
-                error
-              }));
-            })
-        });
-      };
+      found.forEach((Publication) => {
+        if (Publication.imageUrl !== null) {
+          const filename = Publication.imageUrl.split('/images/')[1];
+          fs.unlink(`images/${filename}`, (error) => {
+            if (error) throw error;
+          });
+        }
+      })
     })
-    .catch(error => res.status(500).json({
-      error,
-      message: 'Aucune publication trouvée'
-    }));
+    .then(() => {
+      model.Publication.destroy({
+          where: {
+            UserId: res.locals.userId
+          }
+        })
+    })
+    .then(() => {
+      model.User.destroy({
+          where: {
+            id: res.locals.userId
+          }
+        })
+        .then(() => res.status(200).json({
+          message: 'Utilisateur supprimé !'
+        }))
+        .catch(error => res.status(400).json({
+          error
+        }));
+    })
 };

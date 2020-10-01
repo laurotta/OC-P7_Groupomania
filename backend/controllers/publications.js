@@ -41,21 +41,22 @@ exports.destroyPublication = (req, res, next) => {
       if (publication.imageUrl) {
         const filename = publication.imageUrl.split('/images/')[1];
         fs.unlink(`images/${filename}`, (error) => {
-          if (error) throw error; })
-        }
-        model.Publication.destroy({
-            where: {
-              id: req.params.id
-            }
-          })
-          .then(res.status(200).json({
-            message: "Publication supprimée !"
-          }))
-          .catch(error => res.status(500).json({
-            error,
-            message: "Suppression impossible"
-          }));
+          if (error) throw error;
         })
+      }
+      model.Publication.destroy({
+          where: {
+            id: req.params.id
+          }
+        })
+        .then(() => res.status(200).json({
+          message: "Publication supprimée !"
+        }))
+        .catch(error => res.status(400).json({
+          error,
+          message: "Suppression impossible"
+        }));
+      })
     .catch(error => res.status(500).json({
       error,
       message: "Message inexistant"
