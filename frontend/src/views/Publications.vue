@@ -58,6 +58,7 @@ import Header from "../components/Header"
 import { mapState } from "vuex";
 
 export default {
+  name: 'Publications',
 
   components: {
     Header

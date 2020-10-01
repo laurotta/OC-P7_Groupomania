@@ -18,6 +18,7 @@
               id="textarea"
               v-model="content"
               required
+              :state="content.length >= 7"
               placeholder="Que voulez-vous dire ?"
               rows="3"
               aria-describedby="textarea-help-block"
@@ -89,7 +90,7 @@ export default {
 
   data() {
     return {
-      content: null,
+      content: '',
       file: null,
       addError: false
     }
@@ -113,7 +114,7 @@ export default {
         })
         .then(response => {
           console.log(response);
-          window.location.reload()
+          window.location.reload();
         })
         .catch(error => {
           console.log(error);

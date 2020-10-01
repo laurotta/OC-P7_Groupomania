@@ -11,10 +11,12 @@
 
 <script>
 export default {
-    props: {
-        titre: {
-            type: String
-        }
-    }
+  name: 'HomeSignupHeader',
+
+  props: {
+      titre: {
+          type: String
+      }
+  }
 }
 </script>

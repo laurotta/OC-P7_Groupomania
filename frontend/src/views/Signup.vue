@@ -113,6 +113,7 @@
 import HomeSignupHeader from "../components/HomeSignupHeader"
 
 export default {
+  name: 'Signup',
 
   components: {
     HomeSignupHeader

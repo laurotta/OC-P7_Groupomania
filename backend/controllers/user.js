@@ -4,6 +4,9 @@ const fs = require('fs');
 const model = require('../models');
 const { Op } = require("sequelize");
 
+/*
+Ajout d'un utilisateur
+*/
 exports.signup = (req, res, next) => {
   let emailRegEx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   let passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/; // au moins une lettre et un chiffre, min. 8 caractères max. 12
@@ -75,6 +78,9 @@ exports.signup = (req, res, next) => {
   }
 };
 
+/*
+Connexion d'un utilisateur
+*/
 exports.signin = (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
@@ -124,6 +130,9 @@ exports.signin = (req, res, next) => {
     }));
 };
 
+/*
+Récupération des données de l'utilisateur connecté
+*/
 exports.userData = (req, res, next) => {
   model.User.findOne({
       where: {
@@ -143,6 +152,9 @@ exports.userData = (req, res, next) => {
     }));
 };
 
+/*
+Suppression d'un utilisateur
+*/
 exports.unsubscribeUser = (req, res, next) => {
   model.Publication.findAll({
       attributes: ['imageUrl'],

@@ -47,6 +47,8 @@ import AddPublication from "../components/AddPublication"
 import { mapState } from "vuex";
 
 export default {
+  name: 'Header',
+
   components: {
     AddPublication
   },
