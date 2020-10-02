@@ -71,11 +71,21 @@ export default {
     /*
     Déconnexion de l'utilisateur :
       - suppression du token,
+      - RAZ du store,
       - redirection vers la page de connexion.
     */ 
     disconnect() {
       localStorage.clear();
-      this.$router.push({ path: '/' })
+      this.$store.replaceState({
+        user: {
+          id: null,
+          username: '',
+          email: '',
+          token: '',
+          moderator: ''
+        }
+      });
+      this.$router.push({ path: '/' });
     },
 
     /*

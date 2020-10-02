@@ -1,7 +1,7 @@
 <template>
   <b-container>
 
-    <Header v-bind:username="user.username"/>
+    <Header v-if="user.id !== null" v-bind:username="user.username"/>
 
     <b-row align-h="center">
       <b-col
@@ -81,18 +81,10 @@ export default {
   },
 
   /*
-  Contrôle d'accès à la page et récupération des informations utilisateur
-  */
-  created() {
-    if (localStorage.getItem('token') === null) {
-      this.$router.push({ path: '/' })
-    } else {
-      this.$store.dispatch("getUserData");
-    }
-  },
-
-  /*
-  Récupération de toutes les publications
+  Récupération de toutes les publications :
+    - requête à l'API,
+    - récupération des données Publications / User,
+    - si token absent ou invalide -> modal d'avertissement puis retour page de connexion
   */
   mounted() {
     this.$http
@@ -103,9 +95,17 @@ export default {
       })
       .then(response => {
         this.publications = response.data;
+        this.$store.dispatch("getUserData");
       })
       .catch(error => {
-        console.log(error.response.data.message);
+        this.$bvModal.msgBoxOk(error.response.data.message, {
+                title: 'Accès interdit !',
+                okVariant: 'info',
+                centered: true
+            })
+        .then(() => {
+          this.$router.push({ path: '/' })
+        })
       });
   },
 
