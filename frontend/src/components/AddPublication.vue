@@ -60,26 +60,6 @@
           </b-form-group>
         </b-card>
       </b-collapse>
-
-      <!-- Indication des erreurs -->
-      <b-modal
-        id="bv-modal-error"
-        v-model="addError"
-        hide-footer
-        centered
-      >
-        <template v-slot:modal-title>
-          Erreur
-        </template>
-        <p>Rappel :<br>Un texte d'au moins 7 caractères est requis.</p>
-        <b-button 
-          class="mt-3"
-          variant="info"
-          block @click="$bvModal.hide('bv-modal-error')"
-        >
-          Ok
-        </b-button>
-      </b-modal>
     </b-col>
   </b-row>
 </template>
@@ -92,15 +72,13 @@ export default {
     return {
       content: '',
       file: null,
-      addError: false
+      textError: false,
+      problem: ''
     }
   },
 
   methods: {
     add() {
-      if (this.content === null || this.content.length <= 6) {
-        this.addError = !this.addError
-      } else {
       let formData = new FormData();
       formData.append('image', this.file);
       formData.append('content', this.content);
@@ -117,9 +95,12 @@ export default {
           window.location.reload();
         })
         .catch(error => {
-          console.log(error);
+          this.$bvModal.msgBoxOk(error.response.data.message, {
+                title: 'Publication impossible !',
+                centered: true
+            });
         });
-      }
+      //}
     }
   }
 }

@@ -1,5 +1,6 @@
 <template>
   <b-container>
+    
     <HomeSignupHeader v-bind:titre="titre"/>
 
     <!-- Formulaire d'inscription -->
@@ -68,6 +69,17 @@
               </b-form-text>
             </b-form-group>
 
+            <!-- Indication des erreurs -->
+            <b-alert
+              class="textleft"
+              v-model="signupError"
+              variant="info"
+              dismissible
+              fade
+            >
+              <b-icon icon="info-circle"></b-icon> {{ problem }}
+            </b-alert>
+
             <!-- Bouton de validation -->
             <b-col class="text-center">
               <b-button
@@ -83,29 +95,6 @@
         </b-card>
       </b-col>
     </b-row>
-
-    <!-- Indication des erreurs -->
-    <b-modal
-      id="bv-modal-error"
-      v-model="signupError"
-      hide-footer
-      centered
-    >
-      <template v-slot:modal-title>
-        Erreur
-      </template>
-      <div class="d-block text-center">
-        <p>{{ problem }}</p>
-      </div>
-      <b-button 
-        class="mt-3"
-        variant="info"
-        block
-        @click="$bvModal.hide('bv-modal-error')"
-      >
-        Ok
-      </b-button>
-    </b-modal>
   </b-container>
 </template>
 
@@ -193,9 +182,8 @@ export default {
         this.$http
           .post("http://localhost:3000/api/auth/signup", this.signup)
           .then(response => {
-            console.log(response.status)
             this.signupOk = ''
-            this.$bvModal.msgBoxOk('Vous êtes inscrit. Vous pouvez désormais vous connecter.', {
+            this.$bvModal.msgBoxOk(response.data.message, {
                 title: 'Félicitations !',
                 centered: true
             })

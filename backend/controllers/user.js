@@ -50,9 +50,9 @@ exports.signup = (req, res, next) => {
                   email: email,
                   password: hash
                 })
-                .then(newUser => {
+                .then(() => {
                   res.status(201).json({
-                    id: newUser.id,
+                    message: 'Vous êtes inscrit. Vous pouvez désormais vous connecter.',
                   })
                 })
                 .catch(error => res.status(400).json({

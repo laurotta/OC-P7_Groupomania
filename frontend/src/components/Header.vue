@@ -12,7 +12,7 @@
       <!-- Partie utilisateur -->
       <b-col>
         <div class="user-box">
-          <p id="welcome" class="m-3"><b-icon icon="person-circle"></b-icon> {{ user.username }}</p>
+          <p id="welcome" class="m-3"><b-icon icon="person-circle"></b-icon> {{ username }}</p>
           <div class="m-3">
             <b-button
               type="button"
@@ -38,13 +38,14 @@
         </div>
       </b-col>
     </b-row>
+
     <AddPublication />
+    
   </b-container>
 </template>
 
 <script>
 import AddPublication from "../components/AddPublication"
-import { mapState } from "vuex";
 
 export default {
   name: 'Header',
@@ -53,26 +54,19 @@ export default {
     AddPublication
   },
 
+  props: {
+    username: {
+        type: String
+    }
+  },
+
   data () {
     return {
       unsubscribeUser: '',
     };
   },
 
-  created() {
-      if (localStorage.getItem('token') === null) {
-        this.$router.push({ path: '/' })
-      } else {
-        this.$store.dispatch("getUserData");
-      }
-  },
-
-  computed: {
-    ...mapState(['user'])
-  },
-
   methods: {
-
     disconnect() {
       localStorage.clear();
       this.$router.push({ path: '/' })

@@ -1,5 +1,6 @@
 <template>
   <b-container>
+
     <HomeSignupHeader v-bind:titre="titre"/>
 
     <!-- Formulaire de connexion -->
@@ -34,6 +35,18 @@
             ></b-form-input>
           </b-input-group>
 
+          <!-- Alerte sur erreur de connexion -->
+          <b-alert
+            class="textleft"
+            v-model="signinError"
+            variant="danger"
+            dismissible
+            fade
+          >
+            <p class="h4 mb-2"><b-icon icon="exclamation-circle"></b-icon> Erreur</p>
+            <p>{{ problem }}</p>
+          </b-alert>
+
           <!-- Alerte avec compte à rebours sur erreur 429 -->
           <b-alert
             :show="dismissCountDown"
@@ -41,8 +54,8 @@
             fade
             variant="danger"
             @dismiss-count-down="countDownChanged"
-          >
-            Nouvelle tentative possible dans {{ dismissCountDown }} secondes...
+          ><b-icon icon="emoji-dizzy"></b-icon>
+            Trop de requêtes ! Réessayez dans {{ dismissCountDown }} secondes...
           </b-alert>
 
           <!-- Bouton "valider" -->
@@ -80,28 +93,7 @@
       </b-col>
     </b-row>
     
-    <!-- Indication des erreurs -->
-    <b-modal
-      id="bv-modal-erreur"
-      v-model="signinError"
-      hide-footer
-      centered
-    >
-      <template v-slot:modal-title>
-        Erreur
-      </template>
-      <div class="d-block text-center">
-        <p>{{ problem }}</p>
-      </div>
-      <b-button
-        class="mt-3"
-        variant="info"
-        block
-        @click="$bvModal.hide('bv-modal-erreur')"
-      >
-        Ok
-      </b-button>
-    </b-modal>
+    
   </b-container>
 </template>
 
@@ -112,7 +104,7 @@ export default {
   name: 'Home',
 
   components: {
-    HomeSignupHeader
+    HomeSignupHeader,
   },
 
   data() {
@@ -156,6 +148,9 @@ export default {
 </script>
 
 <style>
+.textleft {
+  text-align: left;
+}
 h1 {
   font-size: 2em;
 }

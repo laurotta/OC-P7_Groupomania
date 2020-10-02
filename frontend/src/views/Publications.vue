@@ -1,6 +1,7 @@
 <template>
   <b-container>
-    <Header />
+
+    <Header v-bind:username="user.username"/>
 
     <b-row align-h="center">
       <b-col
@@ -45,7 +46,7 @@
               </b-button>
             </b-col>
           </b-row>
-          
+
           <!-- Pied carte -->
           <template v-slot:footer>
             <b-icon icon="calendar2-check"></b-icon>
@@ -71,7 +72,7 @@ export default {
   data () {
     return {
       publications: [],
-      destroyPublication: ''
+      destroyPublication: '',
     }
   },
   
@@ -80,7 +81,11 @@ export default {
   },
 
   created() {
-    this.$store.dispatch("getUserData");
+    if (localStorage.getItem('token') === null) {
+      this.$router.push({ path: '/' })
+    } else {
+      this.$store.dispatch("getUserData");
+    }
   },
 
   mounted() {
@@ -99,7 +104,6 @@ export default {
   },
 
   methods: {
-
     alertDestroy(publication) {
       this.destroyPublication = ''
       this.$bvModal.msgBoxConfirm('Voulez-vous vraiment supprimer cette publication ?', {
