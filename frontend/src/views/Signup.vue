@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    
+
     <HomeSignupHeader v-bind:titre="titre"/>
 
     <!-- Formulaire d'inscription -->
@@ -108,7 +108,27 @@ export default {
     HomeSignupHeader
   },
 
+  data() {
+    return {
+      signup: {
+        username: '',
+        email: '',
+        password: ''
+      },
+      signupOk: '',
+      signupError: false,
+      problem: '',
+      titre: 'Inscription',
+      emailRegEx: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      passwordRegEx: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/
+    }
+  },
+
   computed: {
+
+    /*
+    Feedback de saisie du nom d'utilisateur
+    */
     stateUsername() {
       return (this.signup.username.length >= 3 && this.signup.username.length <=50) ? true : false
     },
@@ -127,6 +147,9 @@ export default {
       return this.stateUsername === true ? 'Ok' : ''
     },
 
+    /*
+    Feedback de saisie de l'email
+    */
     stateEmail() {
       return this.emailRegEx.test(this.signup.email) ? true : false
     },
@@ -143,6 +166,9 @@ export default {
       return this.stateEmail === true ? 'Ok' : ''
     },
 
+    /*
+    Feedback de saisie du mot de passe
+    */
     statePassword() {
       return this.passwordRegEx.test(this.signup.password) ? true : false
     },
@@ -160,27 +186,19 @@ export default {
     },
   },
 
-  data() {
-    return {
-      signup: {
-        username: '',
-        email: '',
-        password: ''
-      },
-      signupOk: '',
-      signupError: false,
-      problem: '',
-      titre: 'Inscription',
-      emailRegEx: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      passwordRegEx: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/
-    }
-  },
-
   methods: {
+
+    /*
+    Création d'un compte utilisateur :
+      - envoie la requête si les champs comportent une donnée,
+      - affiche un Modal de succès,
+      - redirige vers la page de connexion,
+      - informe si le nom d'utilisateur ou l'email sont déjà utilisés.
+    */
     signUp() {
       if (this.signup.username !== null && this.signup.email !== null && this.signup.password !== null) {
         this.$http
-          .post("http://localhost:3000/api/auth/signup", this.signup)
+          .post('auth/signup', this.signup)
           .then(response => {
             this.signupOk = ''
             this.$bvModal.msgBoxOk(response.data.message, {

@@ -33,13 +33,11 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     tableName: 'publications',
-    modelName: "Publication"
+    modelName: 'Publication'
   });
   Publication.associate = function (models) {
       models.Publication.belongsTo(models.User, {
-        foreignKey: {
-          allowNull: false
-        }
+        foreignKey: 'UserId'
       });
   };
   return Publication;

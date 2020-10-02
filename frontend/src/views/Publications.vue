@@ -80,6 +80,9 @@ export default {
     ...mapState(['user'])
   },
 
+  /*
+  Contrôle d'accès à la page et récupération des informations utilisateur
+  */
   created() {
     if (localStorage.getItem('token') === null) {
       this.$router.push({ path: '/' })
@@ -88,9 +91,12 @@ export default {
     }
   },
 
+  /*
+  Récupération de toutes les publications
+  */
   mounted() {
     this.$http
-      .get("http://localhost:3000/api/publications", {
+      .get('publications', {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem("token")
         }
@@ -104,6 +110,12 @@ export default {
   },
 
   methods: {
+
+    /*
+    Suppression d'une publication :
+      - Modal demandant confirmation,
+      - envoie la requête si OUI puis rafraîchit la page.
+    */
     alertDestroy(publication) {
       this.destroyPublication = ''
       this.$bvModal.msgBoxConfirm('Voulez-vous vraiment supprimer cette publication ?', {
@@ -121,7 +133,7 @@ export default {
           this.destroyPublication = value
           if (this.destroyPublication == true) {
             this.$http
-              .delete("http://localhost:3000/api/publications/" + publication.id, {
+              .delete('publications/' + publication.id, {
                 headers: {
                   Authorization: "Bearer " + localStorage.getItem("token")
                 }

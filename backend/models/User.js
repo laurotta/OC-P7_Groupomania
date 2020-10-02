@@ -33,8 +33,5 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'users',
     modelName: 'User'
   });
-  User.associate = function(models) {
-    models.User.hasMany(models.Publication)
-  };
   return User;
 };

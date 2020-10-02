@@ -173,13 +173,6 @@ exports.unsubscribeUser = (req, res, next) => {
       })
     })
     .then(() => {
-      model.Publication.destroy({
-          where: {
-            UserId: res.locals.userId
-          }
-        })
-    })
-    .then(() => {
       model.User.destroy({
           where: {
             id: res.locals.userId

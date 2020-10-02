@@ -78,20 +78,26 @@ export default {
   },
 
   methods: {
+
+    /* 
+    Création d'une publication :
+      - récupère les données du formulaire,
+      - envoie les données à l'API,
+      - rafraîchit la page en cas de succès, sinon indique l'erreur.
+    */
     add() {
       let formData = new FormData();
       formData.append('image', this.file);
       formData.append('content', this.content);
 
       this.$http
-        .post('http://localhost:3000/api/publications/addPublication', formData, {
+        .post('publications/addPublication', formData, {
           headers: {
             Authorization: "Bearer " + window.localStorage.getItem("token"),
             'Content-Type': "multipart/form-data"
           }
         })
         .then(response => {
-          console.log(response);
           window.location.reload();
         })
         .catch(error => {

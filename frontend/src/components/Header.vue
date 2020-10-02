@@ -40,7 +40,7 @@
     </b-row>
 
     <AddPublication />
-    
+
   </b-container>
 </template>
 
@@ -67,11 +67,23 @@ export default {
   },
 
   methods: {
+
+    /*
+    Déconnexion de l'utilisateur :
+      - suppression du token,
+      - redirection vers la page de connexion.
+    */ 
     disconnect() {
       localStorage.clear();
       this.$router.push({ path: '/' })
     },
 
+    /*
+    Suppression du compte utilisateur :
+      - Modal demandant confirmation,
+      - envoie la requête si 'OUI',
+      - déconnexion.
+    */
     unsubscribe() {
       this.unsubscribeUser = ''
       this.$bvModal.msgBoxConfirm('Voulez-vous vraiment supprimer votre compte ? Cette opération supprimera également toutes vos publications.', {
@@ -89,7 +101,7 @@ export default {
           this.unsubscribeUser = value
           if (this.unsubscribeUser == true) {
             this.$http
-              .delete("http://localhost:3000/api/auth/delete", {
+              .delete('auth/delete', {
                 headers: {
                   Authorization: "Bearer " + localStorage.getItem("token")
                 }

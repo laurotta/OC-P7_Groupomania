@@ -12,7 +12,7 @@
           <!-- Champ email -->
           <b-input-group class="mb-3">
             <b-input-group-prepend is-text>
-              <b-icon icon="at"></b-icon>
+              <b-icon icon="at" aria-label="Email"></b-icon>
             </b-input-group-prepend>
             <b-form-input
               v-model="signin.email"
@@ -25,7 +25,7 @@
           <!-- Champ mot de passe -->
           <b-input-group class="mb-3">
             <b-input-group-prepend is-text>
-              <b-icon icon="key"></b-icon>
+              <b-icon icon="key" aria-label="Mot de passe"></b-icon>
             </b-input-group-prepend>
             <b-form-input
               type="password"
@@ -50,17 +50,19 @@
           <!-- Alerte avec compte à rebours sur erreur 429 -->
           <b-alert
             :show="dismissCountDown"
-            dismissible
             fade
             variant="danger"
             @dismiss-count-down="countDownChanged"
-          ><b-icon icon="emoji-dizzy"></b-icon>
-            Trop de requêtes ! Réessayez dans {{ dismissCountDown }} secondes...
+          >
+            <p class="h5 mb-2"><b-icon icon="emoji-dizzy"></b-icon>
+            Trop de requêtes !<br/>Réessayez dans {{ dismissCountDown }} secondes...
+            </p>
           </b-alert>
 
           <!-- Bouton "valider" -->
           <b-col class="text-center">
             <b-button
+              v-if="signinError == false && dismissCountDown == 0"
               type="submit"
               variant="success"
               size="lg"
@@ -122,10 +124,18 @@ export default {
   },
 
   methods: {
+
+    /*
+    Connexion de l'utilisateur :
+      - envoie la requête si les champs comportent une donnée,
+      - si données valides -> stockage du token et redirection vers les publications,
+      - si données erronnées -> alerte avec message d'erreur,
+      - si plus de 5 tentatives / 2 minutes -> alerte avec compte à rebours.
+    */
     signIn() {
       if (this.signin.email !== null && this.signin.password !== null) {
         this.$http
-          .post("http://localhost:3000/api/auth/signin", this.signin)
+          .post('auth/signin', this.signin)
           .then(response => {
             localStorage.setItem("token", response.data.token);
             this.$router.push({ path: "Publications" });
