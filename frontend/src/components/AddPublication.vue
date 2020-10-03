@@ -3,6 +3,7 @@
   <b-row align-h="center">
     <b-col sm="8" class="mb-4">
       <b-button
+        size="lg"
         block
         v-b-toggle.collapse-1
         variant="primary"
@@ -100,7 +101,7 @@ export default {
         .then(() => {
           this.$parent.getPublications();
           Object.assign(this.$data, this.$options.data());
-          this.$emit('bv::toggle::collapse', 'collapse-1');
+          this.$root.$emit('bv::toggle::collapse', 'collapse-1');
         })
         .catch(error => {
           this.$bvModal.msgBoxOk(error.response.data.message, {

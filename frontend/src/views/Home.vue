@@ -54,9 +54,12 @@
             variant="danger"
             @dismiss-count-down="countDownChanged"
           >
-            <p class="h5 mb-2"><b-icon icon="emoji-dizzy"></b-icon>
-            Trop de requêtes !<br/>Réessayez dans {{ dismissCountDown }} secondes...
+            <p class="h5 mb-2">
+              <b-icon icon="emoji-dizzy"></b-icon>
+              Trop de requêtes !
             </p>
+            <hr/>
+            <p>Réessayez dans {{ dismissCountDown }} secondes...</p>
           </b-alert>
 
           <!-- Bouton "valider" -->
@@ -87,7 +90,8 @@
       <b-col md="6" class="text-center">
         <h2 class="my-3 pt-3">Pas encore inscrit ?</h2>
         <b-button
-          variant="primary"
+          variant="dark"
+          size="lg"
           @click.prevent="$router.push('signup')"
         >
           Je crée mon compte

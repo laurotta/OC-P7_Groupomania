@@ -83,6 +83,7 @@
             <!-- Bouton de validation -->
             <b-col class="text-center">
               <b-button
+                v-if="signupError == false"
                 class="my-3"
                 type="submit"
                 variant="success"
