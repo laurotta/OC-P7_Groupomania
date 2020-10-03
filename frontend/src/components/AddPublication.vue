@@ -1,7 +1,7 @@
 <template>
   <!-- Formulaire de création de publication -->
   <b-row align-h="center">
-    <b-col sm="8" class="my-3">
+    <b-col sm="8" class="mb-4">
       <b-button
         block
         v-b-toggle.collapse-1
@@ -83,7 +83,7 @@ export default {
     Création d'une publication :
       - récupère les données du formulaire,
       - envoie les données à l'API,
-      - rafraîchit la page en cas de succès, sinon indique l'erreur.
+      - en cas de succès rafraîchit la liste, sinon indique l'erreur.
     */
     add() {
       let formData = new FormData();
@@ -97,8 +97,10 @@ export default {
             'Content-Type': "multipart/form-data"
           }
         })
-        .then(response => {
-          window.location.reload();
+        .then(() => {
+          this.$parent.getPublications();
+          Object.assign(this.$data, this.$options.data());
+          this.$emit('bv::toggle::collapse', 'collapse-1');
         })
         .catch(error => {
           this.$bvModal.msgBoxOk(error.response.data.message, {

@@ -39,20 +39,15 @@
       </b-col>
     </b-row>
 
-    <AddPublication />
+    
 
   </b-container>
 </template>
 
 <script>
-import AddPublication from "../components/AddPublication"
 
 export default {
   name: 'Header',
-
-  components: {
-    AddPublication
-  },
 
   props: {
     username: {
