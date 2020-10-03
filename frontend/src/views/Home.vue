@@ -1,7 +1,7 @@
 <template>
   <b-container>
 
-    <HomeSignupHeader v-bind:titre="titre"/>
+    <HomeSignupHeader v-bind:titre="titre" />
 
     <!-- Formulaire de connexion -->
     <b-row align-h="center">
@@ -43,7 +43,9 @@
             dismissible
             fade
           >
-            <p class="h4 mb-2"><b-icon icon="exclamation-circle"></b-icon> Erreur</p>
+            <p class="h4 mb-2">
+              <b-icon icon="exclamation-circle"></b-icon> Erreur
+            </p>
             <p>{{ problem }}</p>
           </b-alert>
 
@@ -58,7 +60,7 @@
               <b-icon icon="emoji-dizzy"></b-icon>
               Trop de requêtes !
             </p>
-            <hr/>
+            <hr />
             <p>Réessayez dans {{ dismissCountDown }} secondes...</p>
           </b-alert>
 
@@ -70,11 +72,12 @@
               variant="success"
               size="lg"
               pill
-              v-b-tooltip.hover title="Valider"
+              v-b-tooltip.hover
+              title="Valider"
               @click.prevent="signIn"
             >
               <b-icon
-                icon="power" 
+                icon="power"
                 font-scale="1.5"
                 animation="fade"
                 aria-label="Valider"
@@ -98,16 +101,14 @@
         </b-button>
       </b-col>
     </b-row>
-    
-    
   </b-container>
 </template>
 
 <script>
-import HomeSignupHeader from "../components/HomeSignupHeader"
+import HomeSignupHeader from "../components/HomeSignupHeader";
 
 export default {
-  name: 'Home',
+  name: "Home",
 
   components: {
     HomeSignupHeader,
@@ -120,15 +121,14 @@ export default {
         password: null,
       },
       signinError: false,
-      problem: '',
-      titre: 'Bienvenue sur notre réseau social !',
+      problem: "",
+      titre: "Bienvenue sur notre réseau social !",
       dismissSecs: 120,
       dismissCountDown: 0,
     };
   },
 
   methods: {
-
     /*
     Connexion de l'utilisateur :
       - envoie la requête si les champs comportent une donnée,
@@ -139,12 +139,12 @@ export default {
     signIn() {
       if (this.signin.email !== null && this.signin.password !== null) {
         this.$http
-          .post('auth/signin', this.signin)
-          .then(response => {
+          .post("auth/signin", this.signin)
+          .then((response) => {
             localStorage.setItem("token", response.data.token);
             this.$router.push({ path: "Publications" });
           })
-          .catch(error => {
+          .catch((error) => {
             if (error.response.status == 429) {
               this.dismissCountDown = this.dismissSecs;
             } else {
@@ -155,9 +155,9 @@ export default {
       }
     },
     countDownChanged(dismissCountDown) {
-      this.dismissCountDown = dismissCountDown
-    }
-  }
+      this.dismissCountDown = dismissCountDown;
+    },
+  },
 };
 </script>
 
@@ -173,10 +173,10 @@ h2 {
 }
 @media screen and (max-width: 768px) {
   h1 {
-  font-size: 1.6em;
+    font-size: 1.6em;
   }
   h2 {
-  font-size: 1.2em;
+    font-size: 1.2em;
   }
   img {
     width: 100%;

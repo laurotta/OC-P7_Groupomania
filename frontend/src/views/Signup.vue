@@ -1,7 +1,7 @@
 <template>
   <b-container>
 
-    <HomeSignupHeader v-bind:titre="titre"/>
+    <HomeSignupHeader v-bind:titre="titre" />
 
     <!-- Formulaire d'inscription -->
     <b-row align-h="center">
@@ -64,7 +64,7 @@
                 trim
               ></b-form-input>
               <b-form-text id="password-help-block">
-                Votre mot de passe doit être composé de 8 à 12 caratère.<br>
+                Votre mot de passe doit être composé de 8 à 12 caratère.<br />
                 Il doit comporter au moins une lettre et un chiffre.
               </b-form-text>
             </b-form-group>
@@ -100,95 +100,102 @@
 </template>
 
 <script>
-import HomeSignupHeader from "../components/HomeSignupHeader"
+import HomeSignupHeader from "../components/HomeSignupHeader";
 
 export default {
-  name: 'Signup',
+  name: "Signup",
 
   components: {
-    HomeSignupHeader
+    HomeSignupHeader,
   },
 
   data() {
     return {
       signup: {
-        username: '',
-        email: '',
-        password: ''
+        username: "",
+        email: "",
+        password: "",
       },
-      signupOk: '',
+      signupOk: "",
       signupError: false,
-      problem: '',
-      titre: 'Inscription',
+      problem: "",
+      titre: "Inscription",
       emailRegEx: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      passwordRegEx: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/
-    }
+      passwordRegEx: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/,
+    };
   },
 
   computed: {
-
     /*
     Feedback de saisie du nom d'utilisateur
     */
     stateUsername() {
-      return (this.signup.username.length >= 3 && this.signup.username.length <=50) ? true : false
+      return this.signup.username.length >= 3 &&
+        this.signup.username.length <= 50
+        ? true
+        : false;
     },
     invalidUsernameFeedback() {
-        if (this.signup.username.length >= 3 && this.signup.username.length <=50) {
-          return ''
-        } else if (this.signup.username.length > 0 && this.signup.username.length <=50) {
-          return 'Au moins 3 caractères'
-        } else if (this.signup.username.length >= 51) {
-          return '50 caractères maximum'
-        } else {
-          return ''
-        }
-      },
+      if (
+        this.signup.username.length >= 3 &&
+        this.signup.username.length <= 50
+      ) {
+        return "";
+      } else if (
+        this.signup.username.length > 0 &&
+        this.signup.username.length <= 50
+      ) {
+        return "Au moins 3 caractères";
+      } else if (this.signup.username.length >= 51) {
+        return "50 caractères maximum";
+      } else {
+        return "";
+      }
+    },
     validUsernameFeedback() {
-      return this.stateUsername === true ? 'Ok' : ''
+      return this.stateUsername === true ? "Ok" : "";
     },
 
     /*
     Feedback de saisie de l'email
     */
     stateEmail() {
-      return this.emailRegEx.test(this.signup.email) ? true : false
+      return this.emailRegEx.test(this.signup.email) ? true : false;
     },
     invalidEmailFeedback() {
-        if (this.signup.email == '') {
-          return ''
-        } else if (this.emailRegEx.test(this.signup.email) == false) {
-          return 'Format incorrect'
-        } else {
-          return ''
-        }
-      },
+      if (this.signup.email == "") {
+        return "";
+      } else if (this.emailRegEx.test(this.signup.email) == false) {
+        return "Format incorrect";
+      } else {
+        return "";
+      }
+    },
     validEmailFeedback() {
-      return this.stateEmail === true ? 'Ok' : ''
+      return this.stateEmail === true ? "Ok" : "";
     },
 
     /*
     Feedback de saisie du mot de passe
     */
     statePassword() {
-      return this.passwordRegEx.test(this.signup.password) ? true : false
+      return this.passwordRegEx.test(this.signup.password) ? true : false;
     },
     invalidPasswordFeedback() {
-        if (this.signup.password == '') {
-          return ''
-        } else if (this.passwordRegEx.test(this.signup.password) == false) {
-          return 'Mot de passe invalide...'
-        } else {
-          return ''
-        }
-      },
+      if (this.signup.password == "") {
+        return "";
+      } else if (this.passwordRegEx.test(this.signup.password) == false) {
+        return "Mot de passe invalide...";
+      } else {
+        return "";
+      }
+    },
     validPasswordFeedback() {
-      return this.statePassword === true ? 'Ok' : ''
+      return this.statePassword === true ? "Ok" : "";
     },
   },
 
   methods: {
-
     /*
     Création d'un compte utilisateur :
       - envoie la requête si les champs comportent une donnée,
@@ -197,35 +204,41 @@ export default {
       - informe si le nom d'utilisateur ou l'email sont déjà utilisés.
     */
     signUp() {
-      if (this.signup.username !== null && this.signup.email !== null && this.signup.password !== null) {
+      if (
+        this.signup.username !== null &&
+        this.signup.email !== null &&
+        this.signup.password !== null
+      ) {
         this.$http
-          .post('auth/signup', this.signup)
-          .then(response => {
-            this.signupOk = ''
-            this.$bvModal.msgBoxOk(response.data.message, {
-                title: 'Félicitations !',
-                centered: true
-            })
-              .then(value => {
-                this.signupOk = value
+          .post("auth/signup", this.signup)
+          .then((response) => {
+            this.signupOk = "";
+            this.$bvModal
+              .msgBoxOk(response.data.message, {
+                title: "Félicitations !",
+                centered: true,
+              })
+              .then((value) => {
+                this.signupOk = value;
                 if (this.signupOk == true) {
-                  this.$router.push({ path: '/' })
-                }})
-              .catch(error => {
+                  this.$router.push({ path: "/" });
+                }
+              })
+              .catch((error) => {
                 console.log(error.message);
               });
           })
-          .catch(error => {
-              this.problem = error.response.data.message;
-              this.signupError = !this.signupError
+          .catch((error) => {
+            this.problem = error.response.data.message;
+            this.signupError = !this.signupError;
           });
       } else {
-        this.problem = 'Veuillez compléter tous les champs.'
-        this.signupError = !this.signupError
+        this.problem = "Veuillez compléter tous les champs.";
+        this.signupError = !this.signupError;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
@@ -238,11 +251,11 @@ h2 {
 }
 @media screen and (max-width: 768px) {
   h1 {
-  font-size: 1.6em;
+    font-size: 1.6em;
   }
   h2 {
-  font-size: 1.2em;
-  } 
+    font-size: 1.2em;
+  }
   img {
     width: 100%;
   }

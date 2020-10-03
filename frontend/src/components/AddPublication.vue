@@ -45,7 +45,9 @@
             >
               Reset
             </b-button>
-            <p class="mt-2">Fichier sélectionné : {{ file ? file.name : '' }}</p>
+            <p class="mt-2">
+              Fichier sélectionné : {{ file ? file.name : "" }}
+            </p>
 
             <!-- Bouton publier -->
             <b-col class="text-center">
@@ -54,7 +56,8 @@
                 type="submit"
                 variant="success"
                 @click="add"
-              ><b-icon icon="upload" aria-hidden="true"></b-icon>
+              >
+                <b-icon icon="upload" aria-hidden="true"></b-icon>
                 Publier
               </b-button>
             </b-col>
@@ -71,15 +74,14 @@ export default {
 
   data() {
     return {
-      content: '',
+      content: "",
       file: null,
       textError: false,
-      problem: ''
-    }
+      problem: "",
+    };
   },
 
   methods: {
-
     /* 
     Création d'une publication :
       - récupère les données du formulaire,
@@ -88,35 +90,34 @@ export default {
     */
     add() {
       let formData = new FormData();
-      formData.append('image', this.file);
-      formData.append('content', this.content);
+      formData.append("image", this.file);
+      formData.append("content", this.content);
 
       this.$http
-        .post('publications/addPublication', formData, {
+        .post("publications/addPublication", formData, {
           headers: {
             Authorization: "Bearer " + window.localStorage.getItem("token"),
-            'Content-Type': "multipart/form-data"
-          }
+            "Content-Type": "multipart/form-data",
+          },
         })
         .then(() => {
           this.$parent.getPublications();
           Object.assign(this.$data, this.$options.data());
-          this.$root.$emit('bv::toggle::collapse', 'collapse-1');
+          this.$root.$emit("bv::toggle::collapse", "collapse-1");
         })
-        .catch(error => {
+        .catch((error) => {
           this.$bvModal.msgBoxOk(error.response.data.message, {
-                title: 'Publication impossible !',
-                centered: true
-            });
+            title: "Publication impossible !",
+            centered: true,
+          });
         });
-      //}
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
 .custom-file-input:lang(fr) ~ .custom-file-label::after {
-  content: 'Parcourir';
+  content: "Parcourir";
 }
 </style>

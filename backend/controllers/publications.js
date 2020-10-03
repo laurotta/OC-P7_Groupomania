@@ -7,17 +7,17 @@ Ajout d'une publication
 exports.addPublication = (req, res, next) => {
   let content = req.body.content;
   if (content.length >= 7) {
-  model.Publication.create({
-      content: content,
-      UserId: res.locals.userId,
-      imageUrl: (req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null)
-    })
-    .then(publication => res.status(201).json({
-      publication
-    }))
-    .catch(error => res.status(400).json({
-      error
-    }));
+    model.Publication.create({
+        content: content,
+        UserId: res.locals.userId,
+        imageUrl: (req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null)
+      })
+      .then(publication => res.status(201).json({
+        publication
+      }))
+      .catch(error => res.status(400).json({
+        error
+      }));
   } else {
     return res.status(400).json({
       message: 'Un texte d\'au moins 7 caractères est requis.'
@@ -59,7 +59,7 @@ exports.destroyPublication = (req, res, next) => {
         fs.unlink(`images/${filename}`, (error) => {
           if (error) throw error;
         })
-      }
+      };
       model.Publication.destroy({
           where: {
             id: req.params.id
@@ -71,7 +71,7 @@ exports.destroyPublication = (req, res, next) => {
         .catch(error => res.status(400).json({
           error
         }));
-      })
+    })
     .catch(error => res.status(500).json({
       error
     }));

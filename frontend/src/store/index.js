@@ -18,10 +18,10 @@ export default new Vuex.Store({
   mutations: {
     saveUserData(state, [id, username, email, moderator]) {
       state.user.id = id,
-      state.user.username = username,
-      state.user.email = email,
-      state.user.token = localStorage.getItem('token'),
-      state.user.moderator = moderator
+        state.user.username = username,
+        state.user.email = email,
+        state.user.token = localStorage.getItem('token'),
+        state.user.moderator = moderator
     }
   },
 
@@ -34,10 +34,10 @@ export default new Vuex.Store({
           }
         })
         .then(response => {
-          context.commit('saveUserData',[
-            response.data.id, 
-            response.data.username, 
-            response.data.email, 
+          context.commit('saveUserData', [
+            response.data.id,
+            response.data.username,
+            response.data.email,
             response.data.moderator
           ])
         })

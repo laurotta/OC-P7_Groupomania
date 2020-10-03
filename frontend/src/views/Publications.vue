@@ -1,9 +1,9 @@
 <template>
   <b-container>
 
-    <Header v-if="user.id !== null" v-bind:username="user.username"/>
+    <Header v-if="user.id !== null" v-bind:username="user.username" />
 
-    <AddPublication v-if="user.id !== null"/>
+    <AddPublication v-if="user.id !== null" />
 
     <b-row align-h="center">
       <b-col
@@ -21,7 +21,9 @@
         >
           <!-- Entête carte -->
           <template v-slot:header>
-            <p class="mb-0"><strong>{{ publication.User.username }}</strong></p>
+            <p class="mb-0">
+              <strong>{{ publication.User.username }}</strong>
+            </p>
           </template>
 
           <!-- Texte -->
@@ -30,18 +32,27 @@
           <!-- Image (facultative) -->
           <b-row>
             <b-col class="text-center">
-              <b-img v-if="publication.imageUrl !== null" :src="publication.imageUrl" fluid alt=""></b-img>
+              <b-img
+                v-if="publication.imageUrl !== null"
+                :src="publication.imageUrl"
+                fluid
+                alt=""
+              ></b-img>
             </b-col>
           </b-row>
 
           <!-- Bouton supprimer -->
           <b-row align-h="end">
-            <b-col offset="11" v-if="user.moderator == 1 || user.id == publication.UserId">
+            <b-col
+              offset="11"
+              v-if="user.moderator == 1 || user.id == publication.UserId"
+            >
               <b-button
                 class="mx-3 mt-3"
                 variant="danger"
                 size="sm"
-                v-b-tooltip.hover title="Supprimer"
+                v-b-tooltip.hover
+                title="Supprimer"
                 @click="alertDestroy(publication)"
               >
                 <b-icon icon="trash"></b-icon>
@@ -52,7 +63,9 @@
           <!-- Pied carte -->
           <template v-slot:footer>
             <b-icon icon="calendar2-check"></b-icon>
-            <span class="datetime">{{ publication.createdAt | formatDate }}</span>
+            <span class="datetime">{{
+              publication.createdAt | formatDate
+            }}</span>
           </template>
         </b-card>
       </b-col>
@@ -66,22 +79,22 @@ import AddPublication from "../components/AddPublication";
 import { mapState } from "vuex";
 
 export default {
-  name: 'Publications',
+  name: "Publications",
 
   components: {
     Header,
-    AddPublication
+    AddPublication,
   },
 
-  data () {
+  data() {
     return {
       publications: [],
-      destroyPublication: '',
-    }
+      destroyPublication: "",
+    };
   },
-  
+
   computed: {
-    ...mapState(['user'])
+    ...mapState(["user"]),
   },
 
   mounted() {
@@ -89,7 +102,6 @@ export default {
   },
 
   methods: {
-
     /*
     Récupération de toutes les publications :
       - requête l'API,
@@ -98,24 +110,25 @@ export default {
     */
     getPublications() {
       this.$http
-        .get('publications', {
+        .get("publications", {
           headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem("token")
-          }
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
         })
-        .then(response => {
+        .then((response) => {
           this.publications = response.data;
           this.$store.dispatch("getUserData");
         })
-        .catch(error => {
-          this.$bvModal.msgBoxOk(error.response.data.message, {
-                  title: 'Accès non autorisé !',
-                  okVariant: 'info',
-                  centered: true
-              })
-          .then(() => {
-            this.$router.push({ path: '/' })
-          })
+        .catch((error) => {
+          this.$bvModal
+            .msgBoxOk(error.response.data.message, {
+              title: "Accès non autorisé !",
+              okVariant: "info",
+              centered: true,
+            })
+            .then(() => {
+              this.$router.push({ path: "/" });
+            });
         });
     },
 
@@ -125,41 +138,42 @@ export default {
       - envoie la requête si OUI puis rafraîchit la liste.
     */
     alertDestroy(publication) {
-      this.destroyPublication = ''
-      this.$bvModal.msgBoxConfirm('Voulez-vous vraiment supprimer cette publication ?', {
-          title: 'Attention',
-          size: 'sm',
-          buttonSize: 'sm',
-          okVariant: 'danger',
-          okTitle: 'OUI',
-          cancelTitle: 'NON',
-          footerClass: 'p-2',
+      this.destroyPublication = "";
+      this.$bvModal
+        .msgBoxConfirm("Voulez-vous vraiment supprimer cette publication ?", {
+          title: "Attention",
+          size: "sm",
+          buttonSize: "sm",
+          okVariant: "danger",
+          okTitle: "OUI",
+          cancelTitle: "NON",
+          footerClass: "p-2",
           hideHeaderClose: false,
-          centered: true
+          centered: true,
         })
-        .then(value => {
-          this.destroyPublication = value
+        .then((value) => {
+          this.destroyPublication = value;
           if (this.destroyPublication == true) {
             this.$http
-              .delete('publications/' + publication.id, {
+              .delete("publications/" + publication.id, {
                 headers: {
-                  Authorization: "Bearer " + localStorage.getItem("token")
-                }
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
               })
               .then(() => {
                 this.getPublications();
               })
-              .catch(error => {
+              .catch((error) => {
                 console.log(error.message);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error.message);
         });
     },
-  }
-}
+  },
+};
 </script>
 
 <style>
@@ -168,7 +182,7 @@ export default {
 }
 .datetime {
   font-size: 0.85em;
-  color:slategrey;
+  color: slategrey;
   padding-left: 0.7em;
 }
 .br {

@@ -10,7 +10,10 @@ import axios from 'axios'
 import moment from 'moment'
 
 // BootstrapVue
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import {
+  BootstrapVue,
+  IconsPlugin
+} from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -19,7 +22,7 @@ Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://localhost:3000/api/'
 
 // Configuration de moment
-Vue.filter('formatDate', function(value) {
+Vue.filter('formatDate', function (value) {
   if (value) {
     moment.locale('fr');
     return moment(String(value)).format('LL - LT')

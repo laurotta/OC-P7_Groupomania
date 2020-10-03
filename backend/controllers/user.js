@@ -2,7 +2,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const model = require('../models');
-const { Op } = require("sequelize");
+const {
+  Op
+} = require("sequelize");
 
 /*
 Ajout d'un utilisateur
@@ -33,11 +35,14 @@ exports.signup = (req, res, next) => {
     });
   } else {
     model.User.findOne({
-        attributes: ['username','email'],
+        attributes: ['username', 'email'],
         where: {
-          [Op.or]: [
-            { username: username },
-            { email: email }
+          [Op.or]: [{
+              username: username
+            },
+            {
+              email: email
+            }
           ]
         }
       })
@@ -69,7 +74,7 @@ exports.signup = (req, res, next) => {
         } else if (userFound.email == email) {
           return res.status(403).json({
             message: 'Cette adresse email est déjà utlisée !'
-          }); 
+          });
         }
       })
       .catch(error => res.status(500).json({
@@ -100,14 +105,14 @@ exports.signin = (req, res, next) => {
         return res.status(401).json({
           message: 'Cette adresse email est inconnue, vérifiez votre saisie.'
         })
-      }
+      };
       bcrypt.compare(password, user.password)
         .then(valid => {
           if (!valid) {
             return res.status(401).json({
               message: 'Mot de passe incorrect !'
             })
-          }
+          };
           res.status(200).json({
             userId: user.id,
             username: user.username,
@@ -123,7 +128,7 @@ exports.signin = (req, res, next) => {
         })
         .catch(error => res.status(500).json({
           error
-        }))
+        }));
     })
     .catch(error => res.status(500).json({
       error
@@ -141,10 +146,10 @@ exports.userData = (req, res, next) => {
     })
     .then(user => {
       return res.status(200).json({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          moderator: user.moderator
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        moderator: user.moderator
       });
     })
     .catch(error => res.status(500).json({
