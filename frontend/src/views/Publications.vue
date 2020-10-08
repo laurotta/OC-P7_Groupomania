@@ -42,13 +42,13 @@
           </b-row>
 
           <!-- Bouton supprimer -->
-          <b-row align-h="end">
+          <b-row>
             <b-col
-              offset="11"
+              class="text-right"
               v-if="user.moderator == 1 || user.id == publication.UserId"
             >
               <b-button
-                class="mx-3 mt-3"
+                class="mt-3"
                 variant="danger"
                 size="sm"
                 v-b-tooltip.hover

@@ -86,31 +86,36 @@ export default {
     Création d'une publication :
       - récupère les données du formulaire,
       - envoie les données à l'API,
-      - en cas de succès rafraîchit la liste, sinon indique l'erreur.
+      - en cas de succès rafraîchit la liste, efface les champs, ferme l'onglet 
+      - sinon indique l'erreur.
     */
     add() {
-      let formData = new FormData();
-      formData.append("image", this.file);
-      formData.append("content", this.content);
+      if (this.content.length > 6) {
+        let formData = new FormData();
+        formData.append("image", this.file);
+        formData.append("content", this.content);
 
-      this.$http
-        .post("publications/addPublication", formData, {
-          headers: {
-            Authorization: "Bearer " + window.localStorage.getItem("token"),
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(() => {
-          this.$parent.getPublications();
-          Object.assign(this.$data, this.$options.data());
-          this.$root.$emit("bv::toggle::collapse", "collapse-1");
-        })
-        .catch((error) => {
-          this.$bvModal.msgBoxOk(error.response.data.message, {
+        this.$http
+          .post("publications/addPublication", formData, {
+            headers: {
+              Authorization: "Bearer " + window.localStorage.getItem("token"),
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then(() => {
+            this.$parent.getPublications();
+            Object.assign(this.$data, this.$options.data());
+            this.$root.$emit("bv::toggle::collapse", "collapse-1");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        this.$bvModal.msgBoxOk('Un texte d\'au moins 7 caractères est requis.', {
             title: "Publication impossible !",
             centered: true,
           });
-        });
+      }
     },
   },
 };
